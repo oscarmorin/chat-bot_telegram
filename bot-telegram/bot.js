@@ -1,11 +1,25 @@
 require('dotenv').config();
 const {Telegraf} = require('telegraf');
 
-const {getArtist,getPlaylist, getTracks} = require('../data/data');
+const {
+    getArtist,
+    getPlaylist, 
+    getTracks
+} = require('../data/dataSpotify');
+const {
+    startText,
+    searchArtists,
+    searchTracks, 
+    searchGenre, 
+    searchCountry, 
+    searchPlaylist
+} = require('../data/dataTelegram');
+const returnData  = require('../helpers/returnData');
 const dataRandom = require('../helpers/dataRandom');
 const Token = require('../helpers/getTokenSpotify');
 
 const bot = new Telegraf(process.env.TELEGRAM_API_KEY);
+const menuMessage = "¿Qué buscas?";
 let responses; 
 
 bot.help((ctx)=> {
@@ -24,28 +38,24 @@ bot.command('start', async(ctx) => {
     sendStartMessage(ctx);
 });
 
+bot.command('canciones', async(ctx) => {
+    await Token.generateToken();
+    ctx.reply("Ingresa el nombre del artista");
+    responses = 'Canciones por artista';
+});
+
+bot.command('playlist', async(ctx) => {
+    await Token.generateToken();
+    ctx.reply("Ingresa nombre del artista o genero");
+    responses = 'Playlist por artista';
+});
+
 function sendStartMessage (ctx) {
     const startMessage = `Bienvenid@ ${ctx.chat.first_name}, este bot te ayuda a descubrir Spotify en el mundo`;
 
     bot.telegram.sendMessage(ctx.chat.id, startMessage, {
         reply_markup: {
-            inline_keyboard: [
-                [
-                    {text: "Artista", callback_data: 'Artista'}
-                ],
-                [
-                    {text: "Canciones", callback_data: 'Canciones'}
-                ],
-                [
-                    {text: "Genero", callback_data: 'Genero'}
-                ],
-                [
-                    {text: "País", callback_data: 'Pais'}
-                ],
-                [
-                    {text: "Playlist", callback_data: 'Playlist'}
-                ]
-            ]
+            inline_keyboard: startText
         }
     })
 }
@@ -53,20 +63,10 @@ function sendStartMessage (ctx) {
 bot.action('Artista', ctx => {
     ctx.answerCbQuery();
 
-    const menuMessage = "¿Qué buscas?"
     bot.telegram.sendMessage(ctx.chat.id, menuMessage, {
         reply_markup: {
-            keyboard: [
-                [
-                    { text: "Canciones por artista"}
-                ],
-                [
-                    { text: "Playlist por artista"}
-                ],
-                [
-                    { text: "Salir" }
-                ]
-            ],
+            keyboard: 
+            searchArtists,
             resize_keyboard: true,
             one_time_keyboard: true
         }
@@ -77,20 +77,9 @@ bot.action('Artista', ctx => {
 bot.action('Canciones', ctx => {
     ctx.answerCbQuery();
 
-    const menuMessage = "¿Qué buscas?"
     bot.telegram.sendMessage(ctx.chat.id, menuMessage, {
         reply_markup: {
-            keyboard: [
-                [
-                    { text: "Canciones por genero"}
-                ],
-                [
-                    { text: "Canciones por artista"}
-                ],
-                [
-                    { text: "Salir" }
-                ]
-            ],
+            keyboard: searchTracks,
             resize_keyboard: true,
             one_time_keyboard: true
         }
@@ -101,23 +90,9 @@ bot.action('Canciones', ctx => {
 bot.action('Genero', ctx => {
     ctx.answerCbQuery();
 
-    const menuMessage = "¿Qué buscas?"
     bot.telegram.sendMessage(ctx.chat.id, menuMessage, {
         reply_markup: {
-            keyboard: [
-                [
-                    { text: "Playlist por genero"}
-                ],
-                [
-                    { text: "Artistas por genero"}
-                ],
-                [
-                    { text: "Canciones por genero"}
-                ],
-                [
-                    { text: "Salir" }
-                ]
-            ],
+            keyboard: searchGenre,
             resize_keyboard: true,
             one_time_keyboard: true
         }
@@ -128,23 +103,9 @@ bot.action('Genero', ctx => {
 bot.action('Pais', ctx => {
     ctx.answerCbQuery();
 
-    const menuMessage = "¿Qué buscas?"
     bot.telegram.sendMessage(ctx.chat.id, menuMessage, {
         reply_markup: {
-            keyboard: [
-                [
-                    { text: "Canciones por pais"}
-                ],
-                [
-                    { text: "Playlist por pais"}
-                ],
-                [
-                    { text: "Artistas por pais"}
-                ],
-                [
-                    { text: "Salir" }
-                ]
-            ],
+            keyboard: searchCountry,
             resize_keyboard: true,
             one_time_keyboard: true
         }
@@ -155,23 +116,9 @@ bot.action('Pais', ctx => {
 bot.action('Playlist', ctx => {
     ctx.answerCbQuery();
 
-    const menuMessage = "¿Qué buscas?"
     bot.telegram.sendMessage(ctx.chat.id, menuMessage, {
         reply_markup: {
-            keyboard: [
-                [
-                    { text: "Playlist por artista"}
-                ],
-                [
-                    { text: "Playlist por genero"}
-                ],
-                [
-                    { text: "Playlist por pais"}
-                ],
-                [
-                    { text: "Salir" }
-                ]
-            ],
+            keyboard: searchPlaylist,
             resize_keyboard: true,
             one_time_keyboard: true
         }
@@ -209,25 +156,19 @@ bot.on('text', async(ctx) => {
         ctx.reply(`Ya busco algunas canciones de ${ctx.message.text}`);
         const canciones = await getTracks(ctx.message.text);
         const random = dataRandom(canciones);
-        for(let i = 0; i < 5; i++){
-            ctx.reply(random[i]);
-        }
+        returnData(ctx, random);
     }
     if(responses === 'Playlist por artista' || responses === 'Playlist por genero' || responses === 'Playlist por pais'){
         ctx.reply(`Ya busco algunas playlist de ${ctx.message.text}`);
         const playlist = await getPlaylist(ctx.message.text);
         const random = dataRandom(playlist);
-        for(let i = 0; i < 5; i++){
-            ctx.reply(random[i]);
-        }
+        returnData(ctx, random);
     }
     if(responses === 'Artistas por genero' || responses === 'Artistas por pais'){
         ctx.reply(`Ya busco algunos artistas por ${ctx.message.text}`);
         const artistas = await getArtist(ctx.message.text);
         const random = dataRandom(artistas);
-        for(let i = 0; i < 5; i++){
-            ctx.reply(random[i]);
-        }
+        returnData(ctx, random);
     }
 });
 
