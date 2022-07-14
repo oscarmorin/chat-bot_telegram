@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node bot-telegram/bot",
+    "start": "node bot-telegram/bot.js",
     "dev": "nodemon bot-telegram/bot",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
