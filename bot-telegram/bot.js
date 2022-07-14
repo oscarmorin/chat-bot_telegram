@@ -26,6 +26,8 @@ bot.help((ctx)=> {
     const helpMessage = `
     *Music dot bot*
     /start - Iniciar bot
+    /canciones - Buscar canciones por artista
+    /playlist - buscar playlist por artista, género o país
     `;
 
     bot.telegram.sendMessage(ctx.from.id, helpMessage, {
@@ -46,7 +48,7 @@ bot.command('canciones', async(ctx) => {
 
 bot.command('playlist', async(ctx) => {
     await Token.generateToken();
-    ctx.reply("Ingresa nombre del artista o genero");
+    ctx.reply("Ingresa nombre del artista, genero o país");
     responses = 'Playlist por artista';
 });
 
