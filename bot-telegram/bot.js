@@ -23,7 +23,6 @@ bot.help((ctx)=> {
     /start - Iniciar bot
     /canciones - Buscar canciones por artista
     /playlists - Buscar playlist por artista, género o país
-    /salir - finalizar busqueda
     `;
 
     bot.telegram.sendMessage(ctx.from.id, helpMessage, {
