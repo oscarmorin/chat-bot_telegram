@@ -13,6 +13,12 @@ const startText = [
     ],
     [
         {text: "Playlist", callback_data: 'Playlist'}
+    ],
+    [
+        {text: "Salir", callback_data: 'Salir'}
+    ],
+    [
+        {text: "Ayuda", callback_data: 'Ayuda'}
     ]
 ];
 

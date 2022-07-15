@@ -72,6 +72,30 @@ const actions = (bot) => {
             }
         });
         
+    });
+    bot.action('Salir', ctx => {
+        ctx.answerCbQuery();
+        bot.telegram.sendMessage(ctx.chat.id, `Hasta luego ${ctx.chat.first_name} si quieres iniciar una nueva búsqueda presiona /start`, {
+            reply_markup: {
+                remove_keyboard: true
+            }
+        }); 
+        
+    }); 
+    bot.action('Ayuda', ctx => {
+        ctx.answerCbQuery();
+            const helpMessage = `
+            *Music dot bot*
+            Comandos:
+            /start - Iniciar bot
+            /canciones - Buscar canciones por artista
+            /playlists - Buscar playlist por artista, género o país
+            /salir - finalizar busqueda
+            `;
+        
+            bot.telegram.sendMessage(ctx.from.id, helpMessage, {
+                parse_mode: "Markdown"
+            });
     });    
 }
 

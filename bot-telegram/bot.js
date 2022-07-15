@@ -19,9 +19,11 @@ let responses;
 bot.help((ctx)=> {
     const helpMessage = `
     *Music dot bot*
+    Comandos:
     /start - Iniciar bot
     /canciones - Buscar canciones por artista
     /playlists - Buscar playlist por artista, género o país
+    /salir - finalizar busqueda
     `;
 
     bot.telegram.sendMessage(ctx.from.id, helpMessage, {
@@ -74,13 +76,12 @@ bot.hears(['Canciones por pais', 'Artistas por pais', 'Playlist por pais'], ctx 
 });
     
 bot.hears('Salir', ctx => {
-    bot.telegram.sendMessage(ctx.chat.id, `Hasta luego ${ctx.chat.first_name}`, {
+    bot.telegram.sendMessage(ctx.chat.id, `Hasta luego ${ctx.chat.first_name} si quieres iniciar una nueva búsqueda presiona /start`, {
         reply_markup: {
             remove_keyboard: true
         }
     }); 
 });
-
 bot.on('text', async(ctx) => {
     
   if(responses === 'Canciones por pais' || responses === 'Canciones por artista'|| responses === 'Canciones por genero'){
