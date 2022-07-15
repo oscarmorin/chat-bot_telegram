@@ -88,18 +88,21 @@ bot.on('text', async(ctx) => {
     const canciones = await getTracks(ctx.message.text);
     const random = dataRandom(canciones);
     returnData(ctx, random);
+    ctx.reply(`Para buscar nuevamente ${responses} ingrese nuevo nombre, para finalizar escriba Salir`);
  }
   if(responses === 'Playlist por artista' || responses === 'Playlist por genero' || responses === 'Playlist por pais'){
     ctx.reply(`Ya busco algunas playlist de ${ctx.message.text}`);
     const playlist = await getPlaylist(ctx.message.text);
     const random = dataRandom(playlist);
     returnData(ctx, random);
+    ctx.reply(`Para buscar nuevamente ${responses} ingrese nuevo nombre, para finalizar escriba Salir`);
   }
   if(responses === 'Artistas por genero' || responses === 'Artistas por pais'){
     ctx.reply(`Ya busco algunos artistas por ${ctx.message.text}`);
     const artistas = await getArtist(ctx.message.text);
     const random = dataRandom(artistas);
     returnData(ctx, random);
+    ctx.reply(`Para buscar nuevamente ${responses} ingrese nuevo nombre, para finalizar escriba Salir`);
   }
 });
 
