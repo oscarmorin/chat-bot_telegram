@@ -48,12 +48,14 @@ bot.command('playlists', async(ctx) => {
 });
 
 function sendStartMessage (ctx) {
-    const startMessage = `Bienvenid@ ${ctx.chat.first_name}, este bot te ayuda a descubrir Spotify en el mundo`;
+    const startMessage = `Bienvenid@ *${ctx.chat.first_name}*, este bot te ayuda a descubrir *Spotify* en el mundo`;
 
     bot.telegram.sendMessage(ctx.chat.id, startMessage, {
         reply_markup: {
             inline_keyboard: startText
-        }
+        },
+        parse_mode: "Markdown"
+        
     })
 }
 
@@ -75,10 +77,11 @@ bot.hears(['Canciones por pais', 'Artistas por pais', 'Playlist por pais'], ctx 
 });
     
 bot.hears('Salir', ctx => {
-    bot.telegram.sendMessage(ctx.chat.id, `Hasta luego ${ctx.chat.first_name} si quieres iniciar una nueva búsqueda presiona /start`, {
+    bot.telegram.sendMessage(ctx.chat.id, `Hasta luego *${ctx.chat.first_name}* si quieres iniciar una nueva búsqueda presiona /start, si quieres conocer los comandos presiona /help`, {
         reply_markup: {
             remove_keyboard: true
-        }
+        },
+        parse_mode: "Markdown"
     }); 
 });
 bot.on('text', async(ctx) => {
@@ -87,22 +90,19 @@ bot.on('text', async(ctx) => {
     ctx.reply(`Ya busco algunas canciones de ${ctx.message.text}`);
     const canciones = await getTracks(ctx.message.text);
     const random = dataRandom(canciones);
-    returnData(ctx, random);
-    ctx.reply(`Para buscar nuevamente ${responses} ingrese nuevo nombre, para finalizar escriba Salir`);
+    returnData(bot, ctx, random, responses);
  }
   if(responses === 'Playlist por artista' || responses === 'Playlist por genero' || responses === 'Playlist por pais'){
     ctx.reply(`Ya busco algunas playlist de ${ctx.message.text}`);
     const playlist = await getPlaylist(ctx.message.text);
     const random = dataRandom(playlist);
-    returnData(ctx, random);
-    ctx.reply(`Para buscar nuevamente ${responses} ingrese nuevo nombre, para finalizar escriba Salir`);
+    returnData(bot, ctx, random, responses);
   }
   if(responses === 'Artistas por genero' || responses === 'Artistas por pais'){
     ctx.reply(`Ya busco algunos artistas por ${ctx.message.text}`);
     const artistas = await getArtist(ctx.message.text);
     const random = dataRandom(artistas);
-    returnData(ctx, random);
-    ctx.reply(`Para buscar nuevamente ${responses} ingrese nuevo nombre, para finalizar escriba Salir`);
+    returnData(bot, ctx, random, responses);
   }
 });
 

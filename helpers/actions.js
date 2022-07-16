@@ -75,10 +75,11 @@ const actions = (bot) => {
     });
     bot.action('Salir', ctx => {
         ctx.answerCbQuery();
-        bot.telegram.sendMessage(ctx.chat.id, `Hasta luego ${ctx.chat.first_name} si quieres iniciar una nueva búsqueda presiona /start`, {
+        bot.telegram.sendMessage(ctx.chat.id, `Hasta luego *${ctx.chat.first_name}* si quieres iniciar una nueva búsqueda presiona /start, si quieres conocer los comandos presiona /help`, {
             reply_markup: {
                 remove_keyboard: true
-            }
+            },
+            parse_mode: "Markdown"
         }); 
         
     }); 
