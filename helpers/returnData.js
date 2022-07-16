@@ -1,4 +1,5 @@
-const returnData = async(bot, ctx, dataRandom, responses) => {
+class ReturnData {
+  async returnData(bot, ctx, dataRandom, responses){
     let i = 0;
     for(i ; i < 5; i++){
         await ctx.reply(dataRandom[i]);
@@ -9,6 +10,7 @@ const returnData = async(bot, ctx, dataRandom, responses) => {
             parse_mode: "Markdown"
         });
     }
+  }
 }
 
-module.exports = returnData;
+module.exports = new ReturnData();

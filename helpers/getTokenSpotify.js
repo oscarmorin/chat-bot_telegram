@@ -8,7 +8,7 @@ const url_token = 'https://accounts.spotify.com/api/token';
 const data = qs.stringify({'grant_type':'client_credentials'});
 
 class Token {
-  static async generateToken () {     
+  async generateToken () {     
     const result =  await axios.post(url_token,data, {
         headers: {
             'Authorization': `Basic ${auth}`,
@@ -20,6 +20,6 @@ class Token {
   }
 }
 
-module.exports = Token;
+module.exports = new Token();
 
 

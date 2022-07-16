@@ -7,8 +7,8 @@ const {
     getPlaylist, 
     getTracks,
 } = require('../data/dataSpotify');
-const returnData  = require('../helpers/returnData');
-const dataRandom = require('../helpers/dataRandom');
+const {returnData}  = require('../helpers/returnData');
+const {dataRandom} = require('../helpers/dataRandom');
 const actions = require('../helpers/actions');
 const Token = require('../helpers/getTokenSpotify');
 
